@@ -1,0 +1,56 @@
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;  
+
+public class DateTransform {
+
+       public static List<String> changeDateFormat(List<String> dates) {
+              List<String> dates1 = new ArrayList<String>();
+              for(String date : dates) {
+
+                     String format1 = "\\d{4}\\/(0?[1-9]|1[012])\\/(0?[1-9]|[12][0-9]|3[01]).*"; //yyyy/mm/dd
+                     String format2 = "(0?[1-9]|[12][0-9]|3[01])\\/(0?[1-9]|1[012])\\/\\d{4}"; //dd/mm/yyyy
+                     String format3 = "(0?[1-9]|1[012])\\-(0?[1-9]|[12][0-9]|3[01])\\-\\d{4}"; //mm-dd-yyyy
+                     
+                     Pattern pat1 = Pattern.compile(format1);
+                     Matcher mat1 = pat1.matcher(date);
+                     while(mat1.find()) {
+                           if(mat1.group().length() == date.length())
+                           dates1.add(date.replaceAll("/", ""));
+                     }
+                     
+                     Pattern pat2 = Pattern.compile(format2);
+                     Matcher mat2 = pat2.matcher(date);
+                     while(mat2.find()) {
+                           if(mat2.group().length() == date.length()) {
+                                  String[] date_array = date.split("/");
+                                  String date_new = date_array[2]+date_array[1]+date_array[0]; 
+                                  dates1.add(date_new);
+                           }
+                           
+                     }
+                     
+                     Pattern pat3 = Pattern.compile(format3);
+                     Matcher mat3 = pat3.matcher(date);
+                     while(mat3.find()) {
+                           if(mat3.group().length() == date.length()) {
+                                  String[] date_array = date.split("-");
+                                  String date_new = date_array[2]+date_array[0]+date_array[1]; 
+                                  dates1.add(date_new);
+                           }
+                           
+                     }
+              } 
+              
+              return dates1;
+       }
+
+       public static void main(String[] args) {
+              List<String> dates = changeDateFormat(Arrays.asList("2010/03/30", "15/12/2016", "11-15-2012", "20130720"));
+              for (String date : dates) {
+                     System.out.println(date);
+              }
+       }
+}
